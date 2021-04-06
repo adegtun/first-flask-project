@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <h2>This collection belongs to {{ name }}</h2>
+    <table>
+        <tr>
+            <td>Movie</td>
+            <td>Length</td>
+            <td>Comment</td>
+        </tr>
+        {% for movie, length in movies.items() %}
+        <tr>
+            <td>{{ movie }}</td>
+            <td>{{ length }}</td>
+            {% if length <= 2.5 %}
+                <td>Short</td>
+            {% elif length > 2.5 and length <=4 %}
+                <td>Medium</td>
+            {% else %}
+                <td>Long</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
