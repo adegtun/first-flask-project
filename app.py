@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.config.update(
     SECRECT_KEY='topsecret',
-    SQLALCHEMY_DATABASE_URI='<database>://<user_id>:<password>@<server>/<database_name>',
+    SQLALCHEMY_DATABASE_URI='postgresql://postgres:tope123@localhost/catalog_db',
     SQLALCHEMY_TRACK_MODIFICATIONS=False
 )
 db = SQLAlchemy(app)
@@ -42,5 +42,20 @@ def jinja_macros():
     'Agbara nla':1.57}
     return render_template('using_macros.html', movies=movie_dict, name='Sally')
 
+
+class Publication(db.Model):
+    __tablename__='publication'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+
+    def __repr__(self):
+        return 'The id is {}, Name is {}'.format(self.id, self.name)
+
 if __name__=='__main__':
+    db.create_all()
     app.run(debug=True)
