@@ -3,22 +3,19 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
+
 app.config.update(
     SECRECT_KEY='topsecret',
     SQLALCHEMY_DATABASE_URI='postgresql://postgres:tope123@localhost/catalog_db',
     SQLALCHEMY_TRACK_MODIFICATIONS=False
 )
-db = SQLAlchemy(app)
-g.string =''
 
-@app.before_request:
-def some_function():
-    g.string ='<br> This code runs before any request'
+db = SQLAlchemy(app)
 
 @app.route("/")
 def Index():
     user_agent = request.headers.get('User-Agent')
-    return "Your browser is {} and g is".format(user_agent, g.string)
+    return "Your browser is {} is".format(user_agent)
 
 @app.route("/user/<string:name>")
 def User(name):
