@@ -1,0 +1,3 @@
+pip install flask
+pip install flask_SQLalchemy
+pip install psycopg2

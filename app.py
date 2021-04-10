@@ -1,5 +1,6 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, session, g
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 app = Flask(__name__)
 app.config.update(
@@ -8,11 +9,16 @@ app.config.update(
     SQLALCHEMY_TRACK_MODIFICATIONS=False
 )
 db = SQLAlchemy(app)
+g.string =''
+
+@app.before_request:
+def some_function():
+    g.string ='<br> This code runs before any request'
 
 @app.route("/")
 def Index():
     user_agent = request.headers.get('User-Agent')
-    return "Your browser is {}".format(user_agent)
+    return "Your browser is {} and g is".format(user_agent, g.string)
 
 @app.route("/user/<string:name>")
 def User(name):
@@ -42,19 +48,28 @@ def jinja_macros():
     'Agbara nla':1.57}
     return render_template('using_macros.html', movies=movie_dict, name='Sally')
 
-
-class Publication(db.Model):
-    __tablename__='publication'
-
+class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
-
-    def __init__(self, id, name):
-        self.id = id
-        self.name = name
+    name = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
-        return 'The id is {}, Name is {}'.format(self.id, self.name)
+        return '<Category %r>' % self.name
+
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(80), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    pub_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
+    category = db.relationship('Category', backref=db.backref('posts', lazy=True))
+
+    def __repr__(self):
+        return '<Post %r>' % self.title
+
+
+
 
 if __name__=='__main__':
     db.create_all()
